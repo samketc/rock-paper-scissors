@@ -3,7 +3,14 @@ let compChoice;
 let humanChoice;
 let humanScore = 0;
 let compScore = 0;
+const buttons = document.querySelector(".buttons");
+const results = document.querySelector(".results");
+const score = document.querySelector(".score");
 
+//When a button is clicked, play a round
+buttons.addEventListener("click", (e) => {
+   results.textContent = playRound(e.target.id,getComputerChoice());
+})
 
 
 //Randomly assign a value as the computer's choice
@@ -18,20 +25,10 @@ function getComputerChoice(){
     }
 }
 
-//Get the human's choice and make sure it is valid
-function getHumanChoice(){
-    let choice = prompt("What do you choose?");
-    choice = choice.toLowerCase();
-    if (choice == "rock" || choice == "paper" || choice == "scissors"){
-        return choice;
-    }
-}
-
 //Get both choices, find the winner, add score and tell them who won
 function playRound(humanChoice,compChoice){
     let humanWin = false;
     let compWin = false;
-    console.log(compChoice) //make sure the computer isn't cheating
     //find the winner
     if(compChoice=='rock'){
         if(humanChoice=='paper'){
@@ -52,17 +49,37 @@ function playRound(humanChoice,compChoice){
             compWin = true;
         }
     }
-
+    let message = '';
     //give the winner a point and tell the human who won
     if(!compWin && !humanWin){
-        return "It's a tie!";
+        message =  "This round is a tie!";
     }else if(compWin){
         compScore++;
-        return "I win!";
+        message = "I win this round!";
     }else{
         humanScore++;
-        return "You win!";
+        message =  "You win this round!";
     }
+    if(humanScore===5){
+        score.textContent = "You won it all!";
+        buttonsDisable(true);
+    }else if(compScore===5){
+        score.textContent = "I won it all!";
+        buttonsDisable(true);
+    }else{
+        score.textContent = "Your score is "+humanScore+" to my "+compScore;
+    }
+    return message;
+    
+}
+
+//set enable state of buttons
+function buttonsDisable (state){
+    const buttonNodeList = buttons.childNodes;
+    buttonNodeList.forEach(element => {
+        element.disabled = state;
+    });
+
 }
 
 //play 5 rounds then announce an overall winner
